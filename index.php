@@ -52,20 +52,31 @@
                     if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $input = htmlspecialchars($_REQUEST['fname']); // collect value of input field
                         $calcu->infix = $input;
+                        if ($calcu->error_trap() != 0) {
+                            if ($calcu->error_trap() == 1) {
+                                ##ALERT FOR ALPHABET
+                            }
+                            else if ($calcu->error_trap() == 2) {
+                                ##ALERT FOR INVALID SPECIAL CHARACTERS
+                            }
 
-                        $calcu->infix_to_postfix();
-                        $calcu->stack_operation();
+                        }
+                        else {
+                            $calcu->infix_to_postfix();
+                            $calcu->stack_operation();
 
-                        if (empty($input)) {
-                            echo "0";
-                        } else {
-                            echo $calcu->final_ans;
+                            if (empty($input)) {
+                                echo "0";
+                            } else {
+                                echo $calcu->final_ans;
+                            }
                         }
                     }
                     ?>
                 </span>
             </div>
             <div class="row mt-3 mb-3">
+                <div id="liveAlertPlaceholder"></div>   
 
             </div>
         </div>
