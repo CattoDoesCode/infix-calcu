@@ -14,23 +14,49 @@ class InfixCalculator
     public $op_precedence = array("^" => 3, "*" => 2, "/" => 2, "+" => 1, "-" => 1);
     public $op_associativity = array("^" => "r-l", "*" => "l-r", "/" => "l-r", "+" => "l-r", "-" => "l-r");
 
-    function print_arr($arr = array())
+    public $disallowed_charas = array("{","}",",",".","?","'","'",'"',"|","]","[","!","@","#","$","%","&");
+
+    function error_trap() 
     {
-        echo "[";
-        for ($i = 0; $i < count($arr); $i++) {
-            if ($i < count($arr) - 1) {
-                echo $arr[$i] . ", ";
-            } else {
-                echo $arr[$i];
+        $there_is_alpha = false; // return 1
+        $there_is_invalid_char = false; // return 2
+
+        for ($i = 0; $i < strlen($this->infix); $i++){
+            // if (ctype_alpha($this->infix[$i])) {
+            //     $there_is_alpha = true;
+            // }
+            if (in_array($this->infix[$i], $this->disallowed_charas)) {
+                $there_is_invalid_char = true;
             }
         }
-        echo "]" . "\n";
+
+        if ($there_is_alpha) {
+            return 1;
+        }
+        else if($there_is_invalid_char) {
+            return 2;
+        }
+        else {
+            return 0;
+        }
+
     }
 
-    // function __construct($infix)
-    // {
-    //     $this->infix = $infix;
-    // }
+    function print_arr($arr = array())
+    {
+        if (count($arr) != 0) {
+            echo "[";
+            for ($i = 0; $i < count($arr); $i++) {
+                if ($i < count($arr) - 1) {
+                    echo $arr[$i] . ", ";
+                } else {
+                    echo $arr[$i];
+                }
+            }
+            echo "]" . "\n";
+        }
+        
+    }
 
     function precedence_logic($incoming_op)
     {
