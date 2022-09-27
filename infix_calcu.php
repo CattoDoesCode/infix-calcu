@@ -14,32 +14,39 @@ class InfixCalculator
     public $op_precedence = array("^" => 3, "*" => 2, "/" => 2, "+" => 1, "-" => 1);
     public $op_associativity = array("^" => "r-l", "*" => "l-r", "/" => "l-r", "+" => "l-r", "-" => "l-r");
 
-    public $disallowed_charas = array("{","}",",",".","?","'","'",'"',"|","]","[","!","@","#","$","%","&");
-
-    function error_trap() 
+    function error_trap()
     {
         $there_is_alpha = false; // return 1
         $there_is_invalid_char = false; // return 2
+        // excess numbers
+        // excess operators
+        // excess parenthesis
+        // shuffled operators / shuffled numbers
+        // shuffled parenthesis
+        // closing parenthesis as multiplication
 
-        for ($i = 0; $i < strlen($this->infix); $i++){
-            // if (ctype_alpha($this->infix[$i])) {
-            //     $there_is_alpha = true;
-            // }
-            if (in_array($this->infix[$i], $this->disallowed_charas)) {
+        $nums = [];
+        $operators = [];
+
+
+        if (preg_match("/[a-z]/i", $this->infix)) {
+            $there_is_alpha = true;
+        }
+
+        for ($i = 0; $i < strlen($this->infix); $i++) {
+            
+            if (!in_array($this->infix[$i], $this->supported_op) && !preg_match('/\d/', $this->infix[$i]) && $this->infix[$i] != "." && $this->infix[$i] != " ") {
                 $there_is_invalid_char = true;
             }
         }
 
         if ($there_is_alpha) {
             return 1;
-        }
-        else if($there_is_invalid_char) {
+        } else if ($there_is_invalid_char) {
             return 2;
-        }
-        else {
+        } else {
             return 0;
         }
-
     }
 
     function print_arr($arr = array())
@@ -55,7 +62,6 @@ class InfixCalculator
             }
             echo "]" . "\n";
         }
-        
     }
 
     function precedence_logic($incoming_op)
@@ -118,6 +124,11 @@ class InfixCalculator
             if ($x == "(") {
 
                 if (preg_match('/\d/', $last_val)) { // parenthesis as multiplication
+                    if ($temp_num != "") {
+                        array_push($this->nums, $temp_num);
+                    }
+                    $temp_num = "";
+
                     $this->precedence_logic("*");
                 }
 
@@ -213,8 +224,8 @@ class InfixCalculator
                 end($stack);
                 $z = prev($stack);
 
-                $minus_two = (float)$z;
-                $minus_one = (float)end($stack);
+                $minus_two = (float) $z;
+                $minus_one = (float) end($stack);
 
                 if ($this->postfix[$i] == "^") {
                     $ans = $minus_two ** $minus_one;
