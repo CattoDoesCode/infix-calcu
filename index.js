@@ -1,5 +1,4 @@
-function init() {
-    // bootstrap alert
+function bootstrap_alert(title, message, type) {
     const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
     const alert = (title, message, type) => {
         const wrapper = document.createElement('div')
@@ -16,7 +15,7 @@ function init() {
         alertPlaceholder.append(wrapper)
     }
 
-    $("#step-by-step").show();
+    alert(title, message, type)
 }
 
 function clear_values() {
