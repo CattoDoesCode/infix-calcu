@@ -16,37 +16,67 @@ class InfixCalculator
 
     function error_trap()
     {
-        $there_is_alpha = false; // return 1
-        $there_is_invalid_char = false; // return 2
-        // excess numbers
-        // excess operators
-        // excess parenthesis
+        // error trap # 1: alphabet
+        if (preg_match("/[a-z]/i", $this->infix)) {
+            return 1;
+        }
+
+        // error trap # 2: invalid chararacter
+        for ($i = 0; $i < strlen($this->infix); $i++) {
+            if (!in_array($this->infix[$i], $this->supported_op) && !preg_match('/\d/', $this->infix[$i]) && $this->infix[$i] != "." && $this->infix[$i] != " ") {
+                return 2;
+            }
+        }
+
+        // error trap # 3: excess number/s
+        // error trap # 4: excess operator/s
+        // error trap # 5: excess parentheses
+        $nums = [];
+        $operators = [];
+
+        $open_paren = [];
+        $close_paren = [];
+
+        $temp_num = ""; // for detecting multiple digits 
+        $last_val = ""; // for detecting signed numbers
+
+        $infix_arr = str_split($this->infix); // convert infix string to array
+        foreach ($infix_arr as $x) {
+            if ((preg_match('/\d/', $x) || $x == "." ) && $last_val != " ") {
+                $temp_num .= $x;
+            } elseif (in_array($x, $this->supported_op)) {
+                if ($x == "-" && in_array($last_val, $this->supported_op) || $last_val == "") {
+                    $temp_num .= $x;
+                    continue;
+                } elseif ($x == "(") {
+                    array_push($open_paren, $x);
+                } elseif ($x == ")") {
+                    array_push($close_paren, $x);
+                } else {
+                    if ($temp_num != "") {
+                        array_push($nums, $temp_num);
+                    }
+                    $temp_num = "";
+
+                    array_push($operators, $x);
+                }
+            }
+            $last_val = $x;
+        }
+
+        // operators are only binary operators
+        if (!count($nums) == count($operators) + 1) {
+            return 3;
+        }
+
+
         // shuffled operators / shuffled numbers
         // shuffled parenthesis
         // closing parenthesis as multiplication
 
-        $nums = [];
-        $operators = [];
 
+        return 0; // no input error
 
-        if (preg_match("/[a-z]/i", $this->infix)) {
-            $there_is_alpha = true;
-        }
-
-        for ($i = 0; $i < strlen($this->infix); $i++) {
-            
-            if (!in_array($this->infix[$i], $this->supported_op) && !preg_match('/\d/', $this->infix[$i]) && $this->infix[$i] != "." && $this->infix[$i] != " ") {
-                $there_is_invalid_char = true;
-            }
-        }
-
-        if ($there_is_alpha) {
-            return 1;
-        } else if ($there_is_invalid_char) {
-            return 2;
-        } else {
-            return 0;
-        }
     }
 
     function print_arr($arr = array())
