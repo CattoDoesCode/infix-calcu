@@ -42,7 +42,7 @@ class InfixCalculator
 
         $infix_arr = str_split($this->infix); // convert infix string to array
         foreach ($infix_arr as $x) {
-            if ((preg_match('/\d/', $x) || $x == "." ) && $last_val != " ") {
+            if ((preg_match('/\d/', $x) || $x == ".") && $last_val != " ") {
                 $temp_num .= $x;
             } elseif (in_array($x, $this->supported_op)) {
                 if ($x == "-" && in_array($last_val, $this->supported_op) || $last_val == "") {
@@ -70,8 +70,8 @@ class InfixCalculator
         }
 
 
-        // shuffled operators / shuffled numbers
-        // shuffled parenthesis
+        // error trap # 6: shuffled operators / shuffled numbers
+        // error trap # 6: shuffled parenthesis
         // closing parenthesis as multiplication
 
 
@@ -149,11 +149,11 @@ class InfixCalculator
 
         // traverse through the infix input
         $infix_arr = str_split($this->infix); // convert infix string to array
-        foreach ($infix_arr as $x) {
+        foreach ($infix_arr as $idx => $x) {
 
             if ($x == "(") {
 
-                if (preg_match('/\d/', $last_val)) { // parenthesis as multiplication
+                if (preg_match('/\d/', $last_val)) { // open parenthesis as multiplication
                     if ($temp_num != "") {
                         array_push($this->nums, $temp_num);
                     }
@@ -175,6 +175,9 @@ class InfixCalculator
             }
             // check if x is digit https://stackoverflow.com/a/14231097
             else if (preg_match('/\d/', $x) || $x == ".") {
+                // if (preg_match('/\d/', $x) && $last_val == ")") {
+                //     $this->precedence_logic("*");
+                // }
                 $temp_num .= $x;
             } else if (in_array($x, $this->supported_op)) {
 
@@ -203,6 +206,7 @@ class InfixCalculator
                     }
 
                     if ($incoming_op == ")") {
+
                         # pop all operators and push to nums[] until ( is reached
                         foreach (array_reverse($this->operators) as $z) {
                             if ($z == "(") {
@@ -212,6 +216,10 @@ class InfixCalculator
                                     $current_op = end($this->operators);
                                 }
 
+                                // closing parenthesis as multiplication
+                                if (preg_match('/\d/', $infix_arr[$idx + 1]) && $idx != count($infix_arr)) {
+                                    $this->precedence_logic("*");
+                                }
                                 break;
                             }
 
