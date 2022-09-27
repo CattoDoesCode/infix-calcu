@@ -8,7 +8,6 @@
     <title>Infix Calculator</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
     <script src="jquery-3.6.1.min.js"></script>
-    <script src="index.js"></script>
     <style>
         body {
             background-color: rgb(29, 29, 29);
@@ -23,7 +22,7 @@
     <div class="container mt-5">
         <div class="row">
             <h1 class="display-4">Infix Calculator</h1>
-            <p>code by Jamora, Morales, Selerio | BSCS - C83</p>
+            <p id="header">code by Jamora, Morales, Selerio | BSCS - C83</p>
         </div>
 
         <div id="liveAlertPlaceholder"></div>
@@ -32,7 +31,7 @@
             <label>Enter Infix:</label><br>
             <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="text" name="fname" id="input-field">
-                <button type="submit" id="Calculate" class="btn btn-primary" style="width:auto;" onclick="init()">Calculate</button>
+                <button type="submit" id="Calculate" class="btn btn-primary" style="width:auto;">Calculate</button>
                 <button type="button" id="clear-btn" class="btn btn-secondary" onclick="clear_values()" style="width:auto;">Clear</button>
             </form>
         </div>
@@ -46,10 +45,15 @@
 
                     if ($calcu->error_trap() != 0) {
                         if ($calcu->error_trap() == 1) {
-                            echo '<script>alert("Invalid Input! letter detected")</script>';
+                            echo '<script type="text/javascript" src="index.js"> </script>';
+                            echo '<script> bootstrap_alert("input error!", " letter detected", "danger") </script>';
                         } else if ($calcu->error_trap() == 2) {
-                            echo '<script>alert("Invalid Input! invalid character detected")</script>';
+                            echo '<script type="text/javascript" src="index.js"> </script>';
+                            echo '<script>bootstrap_alert("Invalid Input!", " invalid character detected", "danger")</script>';
                         }
+                        // else if ($calcu->error_trap() == 3) {
+                        //     echo '<script>alert("Invalid Input! excess number detected")</script>';
+                        // }
                     } else {
                         $calcu->infix_to_postfix();
                         $calcu->stack_operation();
@@ -75,6 +79,7 @@
         <?php $calcu->print_arr($calcu->postfix) ?>
     </div>
 
+    <script src="index.js"></script>
 </body>
 
 </html>
