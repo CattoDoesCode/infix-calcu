@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <?php include 'infix_calcu.php'; ?>
+    <?php include 'infix_calcu.php'?>
 
     <div class="container mt-5">
         <div class="row">
@@ -54,12 +54,14 @@
                         // else if ($calcu->error_trap() == 3) {
                         //     echo '<script>alert("Invalid Input! excess number detected")</script>';
                         // }
+                        
                     } else {
                         $calcu->infix_to_postfix();
                         $calcu->stack_operation();
 
                         if (empty($input)) {
                             echo "0";
+                            echo '<script> $("#step-by-step").hide(); </script>';
                         } else {
                             echo $calcu->final_ans;
                         }
@@ -75,7 +77,7 @@
         <p style="font-style: italic;" id="infix">Infix:</p>
         <?php echo $calcu->infix ?>
         <br><br>
-        <p style="font-style: italic;" id="postfix">Postix:</p>
+        <p style="font-style: italic;" id="postfix">Postfix:</p>
         <?php $calcu->print_arr($calcu->postfix) ?>
     </div>
 
