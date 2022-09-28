@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <?php include 'infix_calcu_ui.php'?>
+    <?php include 'infix_calcu.php'?>
 
     <div class="container mt-5">
         <div class="row">
