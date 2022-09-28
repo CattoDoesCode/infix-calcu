@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <?php include 'infix_calcu.php'?>
+    <?php include 'infix_calcu.php' ?>
 
     <div class="container mt-5">
         <div class="row">
@@ -43,7 +43,7 @@
                     $input = htmlspecialchars($_REQUEST['fname']); // collect value of input field
                     $calcu->infix = $input;
 
-                    if (empty($input)){
+                    if (empty($input)) {
                         echo "0";
                     }
 
@@ -55,10 +55,11 @@
                             echo '<script type="text/javascript" src="index.js"> </script>';
                             echo '<script>bootstrap_alert("Invalid Input!", " invalid character detected", "danger")</script>';
                         }
-                        // else if ($calcu->error_trap() == 3) {
-                        //     echo '<script>alert("Invalid Input! excess number detected")</script>';
-                        // }
-                        
+                        else if ($calcu->error_trap() == 3) {
+                            echo '<script type="text/javascript" src="index.js"> </script>';
+                            echo '<script>bootstrap_alert("Invalid Input!", " excess number detected", "danger")</script>';
+                        }
+
                     } else {
                         $calcu->infix_to_postfix();
                         $calcu->stack_operation();
@@ -76,14 +77,24 @@
 
     <div class="container mt-5">
         <p style="font-style: italic;" id="infix">Infix:</p>
-        <?= $calcu->infix ?>
+        <p id="infix"><?= $calcu->infix ?></p>
         <br><br>
         <p style="font-style: italic;" id="postfix">Postfix:</p>
-        <?php 
+        <p id="postfix">
+        <?php
         if ($calcu->infix != null && $calcu->error_trap() == 0) {
             $calcu->print_arr($calcu->postfix);
         }
-        ?>
+        ?></p>
+        
+    </div>
+
+    <div class="container mt-5">
+        <p>ERROR TRAPS:</p>
+        <p>nums: <?php $calcu->print_arr($calcu->ET_nums) ?></p>
+        <p>operators: <?php $calcu->print_arr($calcu->ET_ops) ?></p>
+        <p>open paren: <?php $calcu->print_arr($calcu->ET_open_paren) ?></p>
+        <p>close paren: <?php $calcu->print_arr($calcu->ET_close_paren) ?></p>
     </div>
 
     <script src="index.js"></script>
