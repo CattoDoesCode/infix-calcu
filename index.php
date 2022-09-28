@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <?php include 'infix_calcu.php'?>
+    <?php include 'infix_calcu_ui.php'?>
 
     <div class="container mt-5">
         <div class="row">
@@ -27,7 +27,7 @@
 
         <div id="liveAlertPlaceholder"></div>
 
-        <div class="row mt-4 mb-4" style="padding: 0;">
+        <div class="row mt-5 mb-5" style="padding: 0;">
             <label>Enter Infix:</label><br>
             <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="text" name="fname" id="input-field">
@@ -42,6 +42,10 @@
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $input = htmlspecialchars($_REQUEST['fname']); // collect value of input field
                     $calcu->infix = $input;
+
+                    if (empty($input)){
+                        echo "0";
+                    }
 
                     if ($calcu->error_trap() != 0) {
                         if ($calcu->error_trap() == 1) {
@@ -59,10 +63,7 @@
                         $calcu->infix_to_postfix();
                         $calcu->stack_operation();
 
-                        if (empty($input)) {
-                            echo "0";
-                            echo '<script> $("#step-by-step").hide(); </script>';
-                        } else {
+                        if (!empty($input)) {
                             echo $calcu->final_ans;
                         }
                     }
@@ -73,12 +74,16 @@
 
     </div>
 
-    <div class="container mt-5" id="step-by-step">
+    <div class="container mt-5">
         <p style="font-style: italic;" id="infix">Infix:</p>
-        <?php echo $calcu->infix ?>
+        <?= $calcu->infix ?>
         <br><br>
         <p style="font-style: italic;" id="postfix">Postfix:</p>
-        <?php $calcu->print_arr($calcu->postfix) ?>
+        <?php 
+        if ($calcu->infix != null && $calcu->error_trap() == 0) {
+            $calcu->print_arr($calcu->postfix);
+        }
+        ?>
     </div>
 
     <script src="index.js"></script>
