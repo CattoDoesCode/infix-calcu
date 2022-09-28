@@ -217,9 +217,12 @@ class InfixCalculator
                                 }
 
                                 // closing parenthesis as multiplication
-                                if (preg_match('/\d/', $infix_arr[$idx + 1]) && $idx != count($infix_arr)) {
-                                    $this->precedence_logic("*");
+                                if ($idx != count($infix_arr) - 1) {
+                                    if (preg_match('/\d/', $infix_arr[$idx + 1])) {
+                                        $this->precedence_logic("*");
+                                    }
                                 }
+                                 
                                 break;
                             }
 
