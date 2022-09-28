@@ -22,5 +22,5 @@ function clear_values() {
     document.getElementById("input-field").value = "";
     document.getElementById("ans").innerHTML = "= 0";
 
-    $("#step-by-step").hide();
+    $('#liveAlertPlaceholder').hide();
 }
