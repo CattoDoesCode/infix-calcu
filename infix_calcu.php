@@ -45,11 +45,17 @@ class InfixCalculator
         $temp_num = ""; // for detecting multiple digits 
         $last_val = ""; // for detecting signed numbers
 
+        // segregate logic
+
         $infix_arr = str_split($this->infix); // convert infix string to array
         foreach ($infix_arr as $x) {
-            if ((preg_match('/\d/', $x) || $x == ".") && $last_val != " ") {
+            if ($x == " ") {
+                array_push($nums, $temp_num);
+                $temp_num = "";
+            }
+            else if ((preg_match('/\d/', $x) || $x == ".")) {
                 $temp_num .= $x;
-            } elseif (in_array($x, $this->supported_op)) {
+            } else if (in_array($x, $this->supported_op)) {
                 if ($x == "-" && in_array($last_val, $this->supported_op) || $last_val == "") {
                     $temp_num .= $x;
                     continue;
@@ -71,7 +77,6 @@ class InfixCalculator
 
         // push remaining numbers
         if ($temp_num != "") {
-            echo $this->print_arr($nums);
             array_push($nums, $temp_num);
         }
 
