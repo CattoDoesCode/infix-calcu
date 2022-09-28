@@ -14,6 +14,11 @@ class InfixCalculator
     public $op_precedence = array("^" => 3, "*" => 2, "/" => 2, "+" => 1, "-" => 1);
     public $op_associativity = array("^" => "r-l", "*" => "l-r", "/" => "l-r", "+" => "l-r", "-" => "l-r");
 
+    public $ET_nums = [];
+    public $ET_ops = [];
+    public $ET_open_paren = [];
+    public $ET_close_paren = [];
+
     function error_trap()
     {
         // error trap # 1: alphabet
@@ -64,11 +69,23 @@ class InfixCalculator
             $last_val = $x;
         }
 
+        // push remaining numbers
+        if ($temp_num != "") {
+            echo $this->print_arr($nums);
+            array_push($nums, $temp_num);
+        }
+
+
+        // display in ui
+        $this->ET_nums = $nums;
+        $this->ET_ops = $operators;
+        $this->ET_open_paren = $open_paren;
+        $this->ET_close_paren = $close_paren;
+
         // operators are only binary operators
         if (!count($nums) == count($operators) + 1) {
             return 3;
         }
-
 
         // error trap # 6: shuffled operators / shuffled numbers
         // error trap # 6: shuffled parenthesis
@@ -175,9 +192,6 @@ class InfixCalculator
             }
             // check if x is digit https://stackoverflow.com/a/14231097
             else if (preg_match('/\d/', $x) || $x == ".") {
-                // if (preg_match('/\d/', $x) && $last_val == ")") {
-                //     $this->precedence_logic("*");
-                // }
                 $temp_num .= $x;
             } else if (in_array($x, $this->supported_op)) {
 
