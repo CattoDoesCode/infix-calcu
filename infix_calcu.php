@@ -14,12 +14,7 @@ class InfixCalculator
     public $op_precedence = array("^" => 3, "*" => 2, "/" => 2, "+" => 1, "-" => 1);
     public $op_associativity = array("^" => "r-l", "*" => "l-r", "/" => "l-r", "+" => "l-r", "-" => "l-r");
 
-    public $ET_nums = [];
-    public $ET_ops = [];
-    public $ET_open_paren = [];
-    public $ET_close_paren = [];
-
-    public $ET_error_code;
+    public $ET_error_code; // error trap code
 
     function error_trap()
     {
@@ -28,15 +23,16 @@ class InfixCalculator
         // error trap # 1: alphabet & invalid chararacters
         for ($i = 0; $i < strlen($this->infix); $i++) {
             if (!in_array($this->infix[$i], $this->supported_op) && !preg_match('/\d/', $this->infix[$i]) && $this->infix[$i] != "." && $this->infix[$i] != " ") {
-                if (strpos($this->ET_error_code, "1") === false) { 
+                if (strpos($this->ET_error_code, "1") === false) {
                     $this->ET_error_code .= "1";
                 }
             }
         }
 
-        // error trap # 2: excess number/s
-        // error trap # 3: excess operator/s
-        // error trap # 4: excess parentheses
+        // error trap # 2, 3, 4: excess: number/s, operator/s, parenthesis
+
+        // segregate logic
+
         $nums = [];
         $operators = [];
 
@@ -46,24 +42,35 @@ class InfixCalculator
         $temp_num = ""; // for detecting multiple digits 
         $last_val = ""; // for detecting signed numbers
 
-        // segregate logic
-
         $infix_arr = str_split($this->infix); // convert infix string to array
-        foreach ($infix_arr as $x) {
+        foreach ($infix_arr as $idx => $x) {
             if ($x == " ") {
-                array_push($nums, $temp_num);
+                if ($temp_num != "") {
+                    array_push($nums, $temp_num);
+                }
                 $temp_num = "";
-            }
-            else if ((preg_match('/\d/', $x) || $x == ".")) {
+                continue;
+            } elseif ((preg_match('/\d/', $x) || $x == ".")) {
                 $temp_num .= $x;
             } else if (in_array($x, $this->supported_op)) {
-                if ($x == "-" && in_array($last_val, $this->supported_op) || $last_val == "") {
+                if ($x == "-" && in_array($last_val, $this->supported_op) || $last_val == " ") {
                     $temp_num .= $x;
                     continue;
                 } elseif ($x == "(") {
+                    if (preg_match('/\d/', $last_val)) { // open parenthesis as multiplication
+                        array_push($operators, "*");
+                    }
                     array_push($open_paren, $x);
+                    $last_val = "(";
                 } elseif ($x == ")") {
+                    // closing parenthesis as multiplication
+                    if ($idx != count($infix_arr) - 1) {
+                        if (preg_match('/\d/', $infix_arr[$idx + 1]) || preg_match('/\d/', $infix_arr[$idx + 2])) {
+                            array_push($operators, "*");
+                        }
+                    }
                     array_push($close_paren, $x);
+                    $last_val = ")";
                 } else {
                     if ($temp_num != "") {
                         array_push($nums, $temp_num);
@@ -81,26 +88,23 @@ class InfixCalculator
             array_push($nums, $temp_num);
         }
 
-
-        // display in ui
-        $this->ET_nums = $nums;
-        $this->ET_ops = $operators;
-        $this->ET_open_paren = $open_paren;
-        $this->ET_close_paren = $close_paren;
-
-        // operators are only binary operators
-        if (!count($nums) == count($operators) + 1) {
-            if (strpos($this->ET_error_code, "3") === false) { 
-                $this->ET_error_code .= "3";
-            }
+        // error trap # 2: excess number/s
+        // error trap # 3: excess operator/s
+        if (count($nums) > count($operators) + 1) {
+            $this->ET_error_code .= "2";
+        } elseif (count($nums) < count($operators) + 1) {
+            $this->ET_error_code .= "3";
         }
 
-        // error trap # 5: shuffled operators / shuffled numbers
-        // error trap # 6: shuffled parenthesis
+        // error trap # 4: excess parentheses
+        if (count($open_paren) != count($close_paren)) {
+            $this->ET_error_code .= "4";
+        }
 
+        // TODO: error trap # 5: shuffled operators / shuffled numbers 
+        // TODO: error trap # 6: shuffled parenthesis
 
-        return $this->ET_error_code; 
-
+        return $this->ET_error_code;
     }
 
     function print_arr($arr = array())
@@ -156,7 +160,7 @@ class InfixCalculator
 
         // for exponent case
         if ($incoming_op == "^") {
-            if ($this->nums[-1] != $incoming_op) {
+            if (end($this->nums) != $incoming_op) {
                 array_push($this->operators, $incoming_op);
             }
         } else {
@@ -166,6 +170,10 @@ class InfixCalculator
 
     function infix_to_postfix()
     {
+
+        // UI - infix
+        echo '<p style="font-style: italic;">Infix:</p>' . $this->infix . "<br>";
+
         $temp_num = ""; // for detecting multiple digits 
         $last_val = ""; // for detecting signed numbers
 
@@ -174,6 +182,15 @@ class InfixCalculator
         // traverse through the infix input
         $infix_arr = str_split($this->infix); // convert infix string to array
         foreach ($infix_arr as $idx => $x) {
+
+            echo "<br>" . "current element: " . $x . "<br>" . "<br>"; // UI
+            echo "nums: ";
+            echo $this->print_arr($this->nums) . "<br>";
+            echo "operators: ";
+            echo $this->print_arr($this->operators) . "<br>";
+
+
+            $this->current_element = $x;
 
             if ($x == "(") {
 
@@ -243,7 +260,7 @@ class InfixCalculator
                                         $this->precedence_logic("*");
                                     }
                                 }
-                                 
+
                                 break;
                             }
 
@@ -271,14 +288,33 @@ class InfixCalculator
             array_push($this->nums, $op);
         }
 
+        echo "<br>" . "push remaining numbers and operators..." . "<br>" . "<br>"; // UI
+        echo "nums: ";
+        echo $this->print_arr($this->nums) . "<br>";
+
+
         $this->postfix = $this->nums;
+
+        // UI - postfix
+        echo "<br>" . '<p style="font-style: italic;">Postfix:</p>';
+        echo $this->print_arr($this->postfix) . "<br>";
     }
 
     function stack_operation()
     {
+        // UI - postfix
+        echo "<br>" . '<p style="font-style: italic;">Postfix:</p>';
+        echo $this->print_arr($this->postfix) . "<br>";
+
         $stack = [];
 
         for ($i = 0; $i < count($this->nums); $i++) {
+
+            // UI - stack
+            echo "<br>" . "current element: " . $this->postfix[$i] . "<br>" . "<br>";
+
+            echo "stack: ";
+            echo $this->print_arr($stack) . "<br>";
 
             if (in_array($this->postfix[$i], $this->supported_op)) {
                 $ans = 0;
@@ -310,11 +346,17 @@ class InfixCalculator
         }
 
         $this->final_ans = implode(" ", $stack);
+        echo "<br>". "final ans: ". $this->final_ans. "<br>";
     }
 }
 
 $calcu = new InfixCalculator();
+
+// infix w/ multi-digit num, signed num, decimal, w/ & w/o whitespace
+// 
 // infix:   1 + 2.5 - 3* 4 +(5 ^ 6) * 7 / 8 / 9 * -1 + 123
 // postfix: 1 2.5 + 3 4 * - 5 6 ^ 7 * 8 / 9 / -1 * + 123 +
 // final ans: -1404.59722222
+
+// infix w/
 ?>
