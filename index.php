@@ -19,7 +19,7 @@
 <body>
     <?php include 'infix_calcu.php' ?>
 
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <div class="row">
             <h1 class="display-4">Infix Calculator</h1>
             <p id="header">code by Jamora, Morales, Selerio | BSCS - C83</p>
@@ -36,67 +36,71 @@
             </form>
         </div>
 
-        <div class="row">
-            <span class="lead" id="ans" style="padding-left: 1ren;font-size: 2rem;"> =
-                <?php
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    $input = htmlspecialchars($_REQUEST['fname']); // collect value of input field
-                    $calcu->infix = $input;
 
-                    if (empty($input)) {
-                        echo "0";
-                    } else if ($calcu->error_trap() != "0") {
-                        for ($i = 0; $i < strlen($calcu->error_trap()); $i++) {
-                            if ($calcu->error_trap()[$i] == "1") {
-                                echo '<script type="text/javascript" src="index.js"> </script>';
-                                echo '<script> bootstrap_alert("input error!", " invalid character detected", "danger") </script>';
-                            } else if ($calcu->error_trap()[$i] == "2") {
-                                echo '<script type="text/javascript" src="index.js"> </script>';
-                                echo '<script>bootstrap_alert("Invalid Input!", " invalid character detected", "danger")</script>';
-                            } else if ($calcu->error_trap()[$i] == "3") {
-                                echo '<script type="text/javascript" src="index.js"> </script>';
-                                echo '<script>bootstrap_alert("Invalid Input!", " excess number detected", "danger")</script>';
-                            }
-                        }
-                    } else {
-                        $calcu->infix_to_postfix();
-                        $calcu->stack_operation();
+    </div>
 
-                        if (!empty($input)) {
-                            echo $calcu->final_ans;
-                        }
+    <div class="container mt-5">
+
+        <?php
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $input = $_POST['fname']; // collect value of input field
+
+            if (empty($input)) {
+                echo "0";
+            }
+            $calcu->infix = $input;
+
+            if ($calcu->error_trap() != "") {
+                for ($i = 0; $i < strlen($calcu->error_trap()); $i++) {
+                    if ($calcu->error_trap()[$i] == "1") {
+                        echo '<script type="text/javascript" src="index.js"> </script>';
+                        echo '<script> bootstrap_alert("input error!", " invalid character detected", "danger") </script>';
+                    } else if ($calcu->error_trap()[$i] == "2") {
+                        echo '<script type="text/javascript" src="index.js"> </script>';
+                        echo '<script>bootstrap_alert("Invalid Input!", " excess number/s detected", "danger")</script>';
+                    } else if ($calcu->error_trap()[$i] == "3") {
+                        echo '<script type="text/javascript" src="index.js"> </script>';
+                        echo '<script>bootstrap_alert("Invalid Input!", " excess operator/s detected", "danger")</script>';
+                    } else if ($calcu->error_trap()[$i] == "4") {
+                        echo '<script type="text/javascript" src="index.js"> </script>';
+                        echo '<script>bootstrap_alert("Invalid Input!", " excess detected", "danger")</script>';
                     }
                 }
+            } else { ?>
+                <div class="accordion accordion-flush bg-dark" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Infix to Postfix
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body"> <?php $calcu->infix_to_postfix(); ?> </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                Stack Operation
+                            </button>
+                        </h2>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body"> <?php $calcu->stack_operation(); ?> </div>
+                        </div>
+                    </div>
+                </div>
+        <?php
 
-                ?>
-            </span>
-        </div>
-
-    </div>
-
-    <div class="container mt-5">
-        <p style="font-style: italic;" id="infix">Infix:</p>
-        <p id="infix"><?= $calcu->infix ?></p>
-        <br><br>
-        <p style="font-style: italic;" id="postfix">Postfix:</p>
-        <p id="postfix">
-            <?php
-            if ($calcu->infix != null && $calcu->error_trap() == 0) {
-                $calcu->print_arr($calcu->postfix);
+                if (!empty($input)) {
+                    echo "<br>" . "= " . $calcu->final_ans . "<br>";
+                }
             }
-            ?></p>
-
-    </div>
-
-    <div class="container mt-5">
-        <p>ERROR TRAPS:</p>
-        <p>nums: <?php $calcu->print_arr($calcu->ET_nums) ?></p>
-        <p>operators: <?php $calcu->print_arr($calcu->ET_ops) ?></p>
-        <p>open paren: <?php $calcu->print_arr($calcu->ET_open_paren) ?></p>
-        <p>close paren: <?php $calcu->print_arr($calcu->ET_close_paren) ?></p>
+        }
+        ?>
     </div>
 
     <script src="index.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.js"></script>
 </body>
 
 </html>
