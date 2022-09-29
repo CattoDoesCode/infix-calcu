@@ -45,21 +45,19 @@
 
                     if (empty($input)) {
                         echo "0";
-                    }
-
-                    if ($calcu->error_trap() != 0) {
-                        if ($calcu->error_trap() == 1) {
-                            echo '<script type="text/javascript" src="index.js"> </script>';
-                            echo '<script> bootstrap_alert("input error!", " letter detected", "danger") </script>';
-                        } else if ($calcu->error_trap() == 2) {
-                            echo '<script type="text/javascript" src="index.js"> </script>';
-                            echo '<script>bootstrap_alert("Invalid Input!", " invalid character detected", "danger")</script>';
+                    } else if ($calcu->error_trap() != "0") {
+                        for ($i = 0; $i < strlen($calcu->error_trap()); $i++) {
+                            if ($calcu->error_trap()[$i] == "1") {
+                                echo '<script type="text/javascript" src="index.js"> </script>';
+                                echo '<script> bootstrap_alert("input error!", " invalid character detected", "danger") </script>';
+                            } else if ($calcu->error_trap()[$i] == "2") {
+                                echo '<script type="text/javascript" src="index.js"> </script>';
+                                echo '<script>bootstrap_alert("Invalid Input!", " invalid character detected", "danger")</script>';
+                            } else if ($calcu->error_trap()[$i] == "3") {
+                                echo '<script type="text/javascript" src="index.js"> </script>';
+                                echo '<script>bootstrap_alert("Invalid Input!", " excess number detected", "danger")</script>';
+                            }
                         }
-                        else if ($calcu->error_trap() == 3) {
-                            echo '<script type="text/javascript" src="index.js"> </script>';
-                            echo '<script>bootstrap_alert("Invalid Input!", " excess number detected", "danger")</script>';
-                        }
-
                     } else {
                         $calcu->infix_to_postfix();
                         $calcu->stack_operation();
@@ -69,6 +67,7 @@
                         }
                     }
                 }
+
                 ?>
             </span>
         </div>
@@ -81,12 +80,12 @@
         <br><br>
         <p style="font-style: italic;" id="postfix">Postfix:</p>
         <p id="postfix">
-        <?php
-        if ($calcu->infix != null && $calcu->error_trap() == 0) {
-            $calcu->print_arr($calcu->postfix);
-        }
-        ?></p>
-        
+            <?php
+            if ($calcu->infix != null && $calcu->error_trap() == 0) {
+                $calcu->print_arr($calcu->postfix);
+            }
+            ?></p>
+
     </div>
 
     <div class="container mt-5">
