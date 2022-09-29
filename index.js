@@ -20,7 +20,6 @@ function bootstrap_alert(title, message, type) {
 
 function clear_values() {
     document.getElementById("input-field").value = "";
-    document.getElementById("ans").innerHTML = "= 0";
 
     $('#liveAlertPlaceholder').hide();
 }
