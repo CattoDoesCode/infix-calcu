@@ -19,23 +19,24 @@ class InfixCalculator
     public $ET_open_paren = [];
     public $ET_close_paren = [];
 
+    public $ET_error_code;
+
     function error_trap()
     {
-        // error trap # 1: alphabet
-        if (preg_match("/[a-z]/i", $this->infix)) {
-            return 1;
-        }
+        $this->ET_error_code = "";
 
-        // error trap # 2: invalid chararacter
+        // error trap # 1: alphabet & invalid chararacters
         for ($i = 0; $i < strlen($this->infix); $i++) {
             if (!in_array($this->infix[$i], $this->supported_op) && !preg_match('/\d/', $this->infix[$i]) && $this->infix[$i] != "." && $this->infix[$i] != " ") {
-                return 2;
+                if (strpos($this->ET_error_code, "1") === false) { 
+                    $this->ET_error_code .= "1";
+                }
             }
         }
 
-        // error trap # 3: excess number/s
-        // error trap # 4: excess operator/s
-        // error trap # 5: excess parentheses
+        // error trap # 2: excess number/s
+        // error trap # 3: excess operator/s
+        // error trap # 4: excess parentheses
         $nums = [];
         $operators = [];
 
@@ -89,15 +90,16 @@ class InfixCalculator
 
         // operators are only binary operators
         if (!count($nums) == count($operators) + 1) {
-            return 3;
+            if (strpos($this->ET_error_code, "3") === false) { 
+                $this->ET_error_code .= "3";
+            }
         }
 
-        // error trap # 6: shuffled operators / shuffled numbers
+        // error trap # 5: shuffled operators / shuffled numbers
         // error trap # 6: shuffled parenthesis
-        // closing parenthesis as multiplication
 
 
-        return 0; // no input error
+        return $this->ET_error_code; 
 
     }
 
