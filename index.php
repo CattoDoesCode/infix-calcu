@@ -69,13 +69,13 @@
                         echo '<script> bootstrap_alert("input error!", " invalid character detected", "danger") </script>';
                     } else if ($calcu->error_trap()[$i] == "2") {
                         echo '<script type="text/javascript" src="index.js"> </script>';
-                        echo '<script>bootstrap_alert("Invalid Input!", " excess number/s detected", "danger")</script>';
+                        echo '<script>bootstrap_alert("Invalid Input!", " excess number/s detected", "warning")</script>';
                     } else if ($calcu->error_trap()[$i] == "3") {
                         echo '<script type="text/javascript" src="index.js"> </script>';
-                        echo '<script>bootstrap_alert("Invalid Input!", " excess operator/s detected", "danger")</script>';
+                        echo '<script>bootstrap_alert("Invalid Input!", " excess operator/s detected", "info")</script>';
                     } else if ($calcu->error_trap()[$i] == "4") {
                         echo '<script type="text/javascript" src="index.js"> </script>';
-                        echo '<script>bootstrap_alert("Invalid Input!", " excess parenthesis detected", "danger")</script>';
+                        echo '<script>bootstrap_alert("Invalid Input!", " excess parenthesis detected", "dark")</script>';
                     }
                 }
             } else { ?>
