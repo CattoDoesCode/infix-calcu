@@ -108,7 +108,7 @@ class InfixCalculator
         return $this->ET_error_code;
     }
 
-    function print_arr($arr = array())
+    function print_arr($arr)
     {
         if (count($arr) != 0) {
             echo "[";
@@ -350,5 +350,4 @@ $calcu = new InfixCalculator();
 // postfix: 1 2.5 + 3 4 * - 5 6 ^ 7 * 8 / 9 / -1 * + 123 +
 // final ans: -1404.59722222
 
-// infix w/
 ?>
