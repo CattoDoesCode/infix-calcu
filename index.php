@@ -12,17 +12,16 @@
             background-color: rgb(29, 29, 29);
             color: whitesmoke;
         }
-        .accordion-item {
-            border: 1px solid whitesmoke;
-        }
-        .accordion-button:not(.collapsd) {
-            /* color: inherit; */
+        
+        .accordion-button:not(.collapsed) {
             background: rgb(29, 29, 29);
-            color: whitesmoke;  
+            color: whitesmoke;
         }
+
         .accordion-button:not(.collapsed)::after {
             filter: brightness(0%) invert(70%);
         }
+
         .accordion-button:focus {
             box-shadow: inherit;
         }
@@ -76,32 +75,35 @@
                         echo '<script>bootstrap_alert("Invalid Input!", " excess operator/s detected", "danger")</script>';
                     } else if ($calcu->error_trap()[$i] == "4") {
                         echo '<script type="text/javascript" src="index.js"> </script>';
-                        echo '<script>bootstrap_alert("Invalid Input!", " excess detected", "danger")</script>';
+                        echo '<script>bootstrap_alert("Invalid Input!", " excess parenthesis detected", "danger")</script>';
                     }
                 }
             } else { ?>
-                <div class="accordion " id="accordionFlushExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                Infix to Postfix
-                            </button>
-                        </h2>
-                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body"> <?php $calcu->infix_to_postfix(); ?> </div>
+                <div class="col-lg-6">
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    Infix to Postfix
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body"> <?php $calcu->infix_to_postfix(); ?> </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                Stack Operation
-                            </button>
-                        </h2>
-                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body"> <?php $calcu->stack_operation(); ?> </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                    Stack Operation
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body"> <?php $calcu->stack_operation(); ?> </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
         <?php
 
                 if (!empty($input)) {
