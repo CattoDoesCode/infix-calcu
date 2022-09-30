@@ -39,8 +39,9 @@ class InfixCalculator
         $open_paren = [];
         $close_paren = [];
 
-        $temp_num = ""; // for detecting multiple digits 
-        $last_val = ""; // for detecting signed numbers
+        // for detecting multiple digits, decimals, signed numbers
+        $temp_num = "";
+        $last_val = "";
 
         $infix_arr = str_split($this->infix); // convert infix string to array
         foreach ($infix_arr as $idx => $x) {
@@ -50,18 +51,18 @@ class InfixCalculator
                 }
                 $temp_num = "";
                 continue;
+            } elseif ($x == "(") {
+                if (preg_match('/\d/', $last_val)) { // open parenthesis as multiplication
+                    array_push($operators, "*");
+                }
+                array_push($open_paren, $x);
+                $last_val = "(";
             } elseif ((preg_match('/\d/', $x) || $x == ".")) {
                 $temp_num .= $x;
             } else if (in_array($x, $this->supported_op)) {
-                if ($x == "-" && in_array($last_val, $this->supported_op) || $last_val == " ") {
+                if ($x == "-" && in_array($last_val, $this->supported_op) || $last_val == " " || $last_val == "") {
                     $temp_num .= $x;
                     continue;
-                } elseif ($x == "(") {
-                    if (preg_match('/\d/', $last_val)) { // open parenthesis as multiplication
-                        array_push($operators, "*");
-                    }
-                    array_push($open_paren, $x);
-                    $last_val = "(";
                 } elseif ($x == ")") {
                     // closing parenthesis as multiplication
                     if ($idx != count($infix_arr) - 1) {
@@ -183,14 +184,12 @@ class InfixCalculator
         $infix_arr = str_split($this->infix); // convert infix string to array
         foreach ($infix_arr as $idx => $x) {
 
+            // UI
             echo "<br>" . "current element: " . $x . "<br>" . "<br>"; // UI
             echo "nums: ";
             echo $this->print_arr($this->nums) . "<br>";
             echo "operators: ";
             echo $this->print_arr($this->operators) . "<br>";
-
-
-            $this->current_element = $x;
 
             if ($x == "(") {
 
@@ -209,10 +208,6 @@ class InfixCalculator
                     array_push($this->nums, $temp_num);
                 }
                 $temp_num = "";
-
-                $last_val = "("; // for multiple parenthesis
-
-                continue;
             }
             // check if x is digit https://stackoverflow.com/a/14231097
             else if (preg_match('/\d/', $x) || $x == ".") {
@@ -245,7 +240,7 @@ class InfixCalculator
 
                     if ($incoming_op == ")") {
 
-                        # pop all operators and push to nums[] until ( is reached
+                        // pop all operators and push to nums[] until ( is reached
                         foreach (array_reverse($this->operators) as $z) {
                             if ($z == "(") {
                                 array_pop($this->operators);
@@ -346,7 +341,7 @@ class InfixCalculator
         }
 
         $this->final_ans = implode(" ", $stack);
-        echo "<br>". "final ans: ". $this->final_ans. "<br>";
+        echo "<br>" . "final ans: " . $this->final_ans . "<br>";
     }
 }
 
