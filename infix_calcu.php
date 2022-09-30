@@ -128,9 +128,6 @@ class InfixCalculator
         $incoming_op_precedence = $this->op_precedence[$incoming_op];
 
         foreach (array_reverse($this->operators) as $y) {
-            if ($y == "(") {
-                break;
-            }
 
             $current_op = $y;
             $current_op_precedence = $this->op_precedence[$current_op];
