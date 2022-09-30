@@ -39,10 +39,10 @@
 
         <div id="liveAlertPlaceholder"></div>
 
-        <div class="row mt-5 mb-5" style="padding: 0;">
+        <div class="col-lg-6 mt-5 mb-5" style="padding: 0;">
             <label>Enter Infix:</label><br>
             <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                <input type="text" name="fname" id="input-field">
+                <input type="text" name="fname" id="input-field" style="width: 70%">
                 <button type="submit" id="Calculate" class="btn btn-primary" style="width:auto;">Calculate</button>
                 <button type="button" id="clear-btn" class="btn btn-secondary" onclick="clear_values()" style="width:auto;">Clear</button>
             </form>
